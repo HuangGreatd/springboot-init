@@ -30,12 +30,25 @@ public class ExecutorInterceptor implements Interceptor {
 		// 获取原始SQL
 		String originSql = statementHandler.getBoundSql().getSql();
 		
-		// 在这里添加where条件
-		String modifiedSql = originSql + " WHERE userAccount = '校长'";
-		System.out.println(modifiedSql);
-		Field field = statementHandler.getBoundSql().getClass().getDeclaredField("sql");
-		field.setAccessible(true);
-		field.set(statementHandler.getBoundSql(), modifiedSql);
+		// 检查原始SQL中是否已经包含我们要添加的条件
+		if (!originSql.contains("userAccount = '小张'")) {
+			String modifiedSql;
+			if (originSql.toUpperCase().contains("WHERE")) {
+				// 如果包含WHERE条件，添加AND
+				modifiedSql = originSql + " AND userAccount = '小张'";
+			} else {
+				// 如果不包含WHERE条件，直接添加WHERE
+				modifiedSql = originSql + " WHERE userAccount = '小张'";
+			}
+			
+			System.out.println("modifiedSql===>    " + modifiedSql);
+			
+			Field field = statementHandler.getBoundSql().getClass().getDeclaredField("sql");
+			field.setAccessible(true);
+			field.set(statementHandler.getBoundSql(), modifiedSql);
+			System.out.println(field.get(statementHandler.getBoundSql()));
+		}
+		
 		return invocation.proceed();
 	}
 	
