@@ -23,8 +23,7 @@ public class MyBatisPlusConfig {
 	public ConfigurationCustomizer configurationCustomizer(){
 		return configuration -> {
 //			configuration.addInterceptor(new SqlInterceptor());
-//			configuration.addInterceptor(new ExecutorInterceptor());
-			configuration.addInterceptor(new ResultSetInterceptor());
+			configuration.addInterceptor(new ExecutorInterceptor());
 		};
 	}
 	

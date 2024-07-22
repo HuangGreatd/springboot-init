@@ -24,21 +24,29 @@ import java.util.Properties;
 		@Signature(type = StatementHandler.class, method = "update", args = {Statement.class})
 })
 public class ExecutorInterceptor implements Interceptor {
+	
+	
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
+		
 		StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
+		
+		String userAccount = RequestContext.getUserAccount();
+		
+		log.info("UserAccount from context: {}", userAccount);
+		
 		// 获取原始SQL
 		String originSql = statementHandler.getBoundSql().getSql();
 		
 		// 检查原始SQL中是否已经包含我们要添加的条件
-		if (!originSql.contains("userAccount = '小张'")) {
+		if (!originSql.contains("userAccount = '" + userAccount + "'")) {
 			String modifiedSql;
 			if (originSql.toUpperCase().contains("WHERE")) {
 				// 如果包含WHERE条件，添加AND
-				modifiedSql = originSql + " AND userAccount = '小张'";
+				modifiedSql = originSql + " AND userAccount = '" + userAccount + "'";
 			} else {
 				// 如果不包含WHERE条件，直接添加WHERE
-				modifiedSql = originSql + " WHERE userAccount = '小张'";
+				modifiedSql = originSql + " WHERE userAccount = '" + userAccount + "'";
 			}
 			
 			System.out.println("modifiedSql===>    " + modifiedSql);
@@ -46,7 +54,6 @@ public class ExecutorInterceptor implements Interceptor {
 			Field field = statementHandler.getBoundSql().getClass().getDeclaredField("sql");
 			field.setAccessible(true);
 			field.set(statementHandler.getBoundSql(), modifiedSql);
-			System.out.println(field.get(statementHandler.getBoundSql()));
 		}
 		
 		return invocation.proceed();
@@ -59,6 +66,5 @@ public class ExecutorInterceptor implements Interceptor {
 	
 	@Override
 	public void setProperties(Properties properties) {
-		// 可以在这里设置一些属性
 	}
 }
