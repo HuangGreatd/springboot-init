@@ -2,6 +2,9 @@ package com.juzipi.mapper;
 
 import com.juzipi.domain.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author 73782
@@ -10,7 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity generator.domain.User
 */
 public interface UserMapper extends BaseMapper<User> {
-
+	
+	List<User> selectListUser(@Param("userName") String userName);
 }
 
 

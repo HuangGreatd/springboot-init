@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 		return ResultUtils.error(e.getCode(), e.getMessage());
 	}
 	
-	@ExceptionHandler(BusinessException.class)
+	@ExceptionHandler(RuntimeException.class)
 	public BaseResponse<?> runtimeExceptionHandler(BusinessException e) {
 		log.error("RuntimeException", e);
 		return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "系统错误");

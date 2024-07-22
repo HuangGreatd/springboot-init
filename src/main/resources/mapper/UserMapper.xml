@@ -25,4 +25,14 @@
         userAvatar,userProfile,userRole,
         createTime,updateTime,isDelete
     </sql>
+
+    <select id="selectListUser" resultType="com.juzipi.domain.entity.User">
+        SELECT * FROM user
+        <where>
+            <if test="userName != null">
+                AND userName = #{userName}
+            </if>
+        </where>
+    </select>
+
 </mapper>
