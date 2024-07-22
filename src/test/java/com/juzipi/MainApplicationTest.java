@@ -24,7 +24,7 @@ public class MainApplicationTest {
 	@Test
 	public void test(){
 		List<User> userList = userMapper.selectListUser("小明");
-		
 		System.out.println(userList);
+		System.out.println();
 	}
 }
