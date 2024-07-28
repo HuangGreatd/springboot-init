@@ -1,4 +1,4 @@
-package com.juzipi.domain.dto.req;
+package com.juzipi.domain.dto.req.user;
 
 import lombok.Data;
 

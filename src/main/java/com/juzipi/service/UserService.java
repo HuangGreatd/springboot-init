@@ -1,11 +1,10 @@
 package com.juzipi.service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.juzipi.domain.dto.req.UserLoginRequest;
-import com.juzipi.domain.dto.req.UserQueryParamRequest;
-import com.juzipi.domain.dto.req.UserQueryRequest;
-import com.juzipi.domain.dto.req.UserRegisterRequest;
+import com.juzipi.domain.dto.req.user.UserLoginRequest;
+import com.juzipi.domain.dto.req.user.UserQueryParamRequest;
+import com.juzipi.domain.dto.req.user.UserQueryRequest;
+import com.juzipi.domain.dto.req.user.UserRegisterRequest;
 import com.juzipi.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.juzipi.domain.vo.UserVO;
@@ -28,7 +27,11 @@ public interface UserService extends IService<User> {
 	
 	List<UserVO> queryOneByParam(UserQueryParamRequest userQueryParamRequest);
 	
-	UserVO getLoginUser(HttpServletRequest request);
+	UserVO getLoginUserVo(HttpServletRequest request);
+	
+	User getLoginUser(HttpServletRequest request);
+	
+	List<UserVO> getUserVO(List<User> userList);
 	
 	boolean userLogout(HttpServletRequest request);
 	

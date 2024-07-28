@@ -32,11 +32,13 @@ public class AuthInterceptor {
 	
 	@Around("@annotation(authCheck)")
 	public Object doInterceptor(ProceedingJoinPoint joinPoint, AuthCheck authCheck) throws Throwable {
-		String mustRole = authCheck.mustRole();
+		int mustRoleNum = authCheck.mustRole();
+		String mustRole = UserRoleEnums.getRoleName(mustRoleNum);
+		
 		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
 		HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 		//当前登录用户
-		UserVO loginUser = userService.getLoginUser(request);
+		UserVO loginUser = userService.getLoginUserVo(request);
 		String userRole = loginUser.getUserRole();
 		if (userRole == null) {
 			return joinPoint.proceed();
@@ -45,9 +47,9 @@ public class AuthInterceptor {
 			throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
 		}
 		//必须有管理员权限
-		if (UserRoleEnums.ADMIN.equals(mustRole)) {
+		if (UserRoleEnums.ADMIN.getRole().equals(mustRole)) {
 			//用户没有管理员权限，拒绝
-			if (!UserRoleEnums.ADMIN.equals(userRole)) {
+			if (!UserRoleEnums.ADMIN.getRole().equals(userRole)) {
 				throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
 			}
 		}

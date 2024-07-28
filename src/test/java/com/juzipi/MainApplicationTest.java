@@ -1,7 +1,6 @@
 package com.juzipi;
 
 import com.juzipi.domain.entity.User;
-import com.juzipi.interceptor.RequestContext;
 import com.juzipi.mapper.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +24,11 @@ public class MainApplicationTest {
 	@Test
 	public void test(){
 		String userAccount = "小张";
-		RequestContext.setUserAccount(userAccount);
 		List<User> userList = userMapper.selectListUser("小明");
 		
 		for (User user : userList) {
 			System.out.println("user = " + user);
 		}
 		
-		RequestContext.clear();
 	}
 }

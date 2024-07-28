@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.juzipi.interceptor.ExecutorInterceptor;
-import com.juzipi.interceptor.ResultSetInterceptor;
 import com.juzipi.interceptor.SqlInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +20,8 @@ public class MyBatisPlusConfig {
 	@Bean
 	public ConfigurationCustomizer configurationCustomizer(){
 		return configuration -> {
-//			configuration.addInterceptor(new SqlInterceptor());
-			configuration.addInterceptor(new ExecutorInterceptor());
+			configuration.addInterceptor(new SqlInterceptor());
+//			configuration.addInterceptor(new ExecutorInterceptor());
 		};
 	}
 	

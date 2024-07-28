@@ -9,4 +9,7 @@ public interface UserConstant {
 	 * 用户登录态键
 	 */
 	String USER_LOGIN_STATE = "user_login";
+	
+	
+	public static final int  ADMIN_ROLE_NUM = 2;
 }

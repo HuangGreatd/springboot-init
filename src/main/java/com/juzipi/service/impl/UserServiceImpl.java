@@ -1,5 +1,6 @@
 package com.juzipi.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -7,10 +8,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.juzipi.common.ErrorCode;
 import com.juzipi.constant.CommonConstant;
-import com.juzipi.domain.dto.req.UserLoginRequest;
-import com.juzipi.domain.dto.req.UserQueryParamRequest;
-import com.juzipi.domain.dto.req.UserQueryRequest;
-import com.juzipi.domain.dto.req.UserRegisterRequest;
+import com.juzipi.domain.dto.req.user.UserLoginRequest;
+import com.juzipi.domain.dto.req.user.UserQueryParamRequest;
+import com.juzipi.domain.dto.req.user.UserQueryRequest;
+import com.juzipi.domain.dto.req.user.UserRegisterRequest;
 import com.juzipi.domain.entity.User;
 import com.juzipi.domain.enums.UserRoleEnums;
 import com.juzipi.domain.vo.UserVO;
@@ -24,6 +25,7 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +63,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 		String userPassword = userRegisterRequest.getUserPassword();
 		String userName = userRegisterRequest.getUserName();
 		String checkPassword = userRegisterRequest.getCheckPassword();
+		if (StrUtil.isEmpty(userAccount) || StrUtil.isEmpty(userPassword) || StrUtil.isEmpty(checkPassword) || StrUtil.isEmpty(userName)) {
+			throw new BusinessException(ErrorCode.PARAMS_ERROR, "请输入必填信息");
+		}
 		
 		//校验
 		if (!checkPassword.equals(userPassword)) {
@@ -131,7 +136,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 		String userName = userQueryParamRequest.getUserName();
 		Long userId = userQueryParamRequest.getUserId();
 		LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-		
 		if (!StrUtil.isEmpty(userAccount)) {
 			queryWrapper.like(User::getUserAccount, userAccount);
 		}
@@ -147,13 +151,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 	}
 	
 	/**
-	 * 获取当前登录用户
+	 * 获取当前登录用户 （脱敏）
 	 *
 	 * @param request
 	 * @return
 	 */
 	@Override
-	public UserVO getLoginUser(HttpServletRequest request) {
+	public UserVO getLoginUserVo(HttpServletRequest request) {
 		Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
 		if (userObj == null) {
 			throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
@@ -166,6 +170,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 			throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
 		}
 		return convertToUserVO(currentUser);
+	}
+	
+	/**
+	 * 获取当前登录用户(全部)
+	 *
+	 * @param request
+	 * @return
+	 */
+	@Override
+	public User getLoginUser(HttpServletRequest request) {
+		Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+		if (userObj == null) {
+			throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+		}
+		User currentUser = (User) userObj;
+		Long userId = currentUser.getId();
+		currentUser = this.getById(userId);
+		if (currentUser == null) {
+			throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+		}
+		return currentUser;
+	}
+	
+	
+	@Override
+	public List<UserVO> getUserVO(List<User> userList) {
+		if (CollUtil.isEmpty(userList)) {
+			return new ArrayList<>();
+		}
+		return userList.stream().map(this::convertToUserVO).collect(Collectors.toList());
 	}
 	
 	@Override
@@ -204,7 +238,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 	}
 	
 	@Override
-	public void selectListUser(){
+	public void selectListUser() {
 		String userName = "juzipi";
 		List<User> userList = userMapper.selectListUser(userName);
 	}

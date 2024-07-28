@@ -1,5 +1,7 @@
 package com.juzipi.domain.enums;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +47,15 @@ public enum UserRoleEnums {
 		for (UserRoleEnums role : UserRoleEnums.values()) {
 			if (role.getCode() == code) {
 				return role;
+			}
+		}
+		return null;
+	}
+	
+	public static String getRoleName(int code) {
+		for (UserRoleEnums role : UserRoleEnums.values()) {
+			if (role.getCode() == code) {
+				return role.getRole();
 			}
 		}
 		return null;
